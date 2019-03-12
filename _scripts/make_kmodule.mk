@@ -15,3 +15,23 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+CFLAGS += -Wall -Wextra -Wno-unused-parameter -Wno-char-subscripts
+CFLAGS += -Wno-multichar -Wno-implicit-fallthrough
+CFLAGS += -fno-builtin -ffreestanding -fPIC -nostartfiles
+CFLAGS += -D_DATE_=\"'$(DATE)'\" -D_GITH_=\"'$(GIT)'\"
+
+$(krndir) = $(topdir)/../../kernel
+__CFLAGS = $(CFLAGS)
+__CFLAGS += -I $(krndir)/include
+__CFLAGS += -I $(krndir)/arch/$(target_arch)/include
+__CFLAGS += -I $(krndir)/os/$(target_os)
+
+$(name)_src-y = $(src-y)
+$(eval $(call ccpl,_))
+DEPS += $(call obj,_,$(name),d)
+objs = $(call obj,_,$(name),o)
+
+$(libdir)/$(name).km:: $(objs)
+	$(S) mkdir -p $(dir $@)
+	$(Q) echo "    LD  "$@
+	$(V) $(CC) --shared $(LFLAGS) -o $@ $(objs)

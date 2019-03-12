@@ -92,9 +92,6 @@ $(libdir)/lib%.a:
 	$(Q) echo "    AR  "$@
 	$(V) $(AR) src $@ $^
 
-# S O U R C E S   C O M P I L A T I O N -=-=-=-=-=-=-=-=-
-include $(topdir)/sources.mk
-
 # C O M M O N   T A R G E T S -=-=-=-=-=-=-=-=-=-=-=-=-=-
 libs: $(DV_LIBS)
 bins: $(DV_UTILS)
