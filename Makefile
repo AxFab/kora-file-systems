@@ -22,8 +22,12 @@ gendir ?= $(shell pwd)
 
 include $(topdir)/make/global.mk
 
-all: $(DRVS)
-install: 
+all: drivers libs bins
+
+install: install-all
+
+CFLAGS += -Wall -Wextra -fPIC
+CFLAGS += -Wno-unused-parameter
 
 include $(topdir)/make/build.mk
 include $(topdir)/make/drivers.mk
@@ -32,8 +36,11 @@ include $(srcdir)/vfat/Makefile
 include $(srcdir)/isofs/Makefile
 include $(srcdir)/ext2/Makefile
 
-CFLAGS += -Wall -Wextra -fPIC
-CFLAGS += -Wno-unused-parameter
+
+drivers: $(DRVS)
+libs: $(LIBS)
+bins: $(BINS)
+install-all: $(patsubst %,install-%,$(DRVS) $(LIBS) $(BINS))
 
 
 ifeq ($(NODEPS),)

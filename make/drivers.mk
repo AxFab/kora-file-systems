@@ -26,7 +26,7 @@ $(libdir)/$(1).km: $(call fn_objs,$(1)_SRCS-y)
 	$(Q) echo "    LD  $$@"
 	$(V) $(LD) -shared -o $$@ $$^ $($(1)_LFLAGS)
 install-$(1): $(prefix)/lib/drivers/$(1).km
-$(prefix)/lib/drivers/$(1).so: $(libdir)/$(1).km
+$(prefix)/lib/drivers/$(1).km: $(libdir)/$(1).km
 	$(S) mkdir -p $$(dir $$@))
 	$(V) $(INSTALL) $$< $$@
 .PHONY:$(1)
