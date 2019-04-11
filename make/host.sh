@@ -38,9 +38,13 @@ case "$arch" in
         arch=i386
         vendor=pc
         ;;
-    x86_64)
-        arch=x86_64
+    x86_64|amd64)
+        arch=amd64
         vendor=pc
+        ;;
+    armv7l)
+        arch=arm
+        vendor=phone
         ;;
     *)
         echo "Unsupported architecture" >&2
@@ -61,6 +65,9 @@ if [ -z "$os" ]; then
 fi
 
 case "$os" in
+    Android)
+        os=linux-android
+        ;;
     GNU/Linux)
         os=linux-gnu
         ;;
