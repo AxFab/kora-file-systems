@@ -20,11 +20,15 @@
 
 define link_driver
 DRVS += $(1)
-$(1): $(libdir)/$(1).km
+$(1): $(libdir)/$(1).km $(libdir)/lk$(1).a
 $(libdir)/$(1).km: $(call fn_objs,$(1)_SRCS-y)
 	$(S) mkdir -p $$(dir $$@)
 	$(Q) echo "    LD  $$@"
 	$(V) $(LD) -shared -o $$@ $$^ $($(1)_LFLAGS)
+$(libdir)/lk$(1).a: $(call fn_objs,$(1)_SRCS-y)
+	$(S) mkdir -p $$(dir $$@)
+	$(Q) echo "    AR  $$@"
+	$(V) $(AR) rc $$@ $$^
 install-$(1): $(prefix)/lib/drivers/$(1).km
 $(prefix)/lib/drivers/$(1).km: $(libdir)/$(1).km
 	$(S) mkdir -p $$(dir $$@))

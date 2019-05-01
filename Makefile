@@ -27,7 +27,7 @@ all: drivers libs bins
 install: install-all
 
 CFLAGS += -Wall -Wextra -fPIC
-CFLAGS += -Wno-unused-parameter
+CFLAGS += -Wno-unused-parameter -Dmain=_main
 
 include $(topdir)/make/build.mk
 include $(topdir)/make/drivers.mk
