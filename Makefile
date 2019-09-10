@@ -27,8 +27,14 @@ all: drivers libs bins
 install: install-all
 
 CFLAGS += -Wall -Wextra -fPIC
-CFLAGS += -Wno-unused-parameter -Dmain=_main
+CFLAGS += -Wno-unused-parameter
+ifeq ($(target_os),kora)
+CFLAGS += -Dmain=_main
+endif
+
 CFLAGS += -ggdb
+
+LFLAGS += -lc
 
 include $(topdir)/var/make/build.mk
 include $(topdir)/var/make/drivers.mk
