@@ -20,11 +20,10 @@
 topdir ?= $(shell readlink -f $(dir $(word 1,$(MAKEFILE_LIST))))
 gendir ?= $(shell pwd)
 
-include $(topdir)/var/make/global.mk
+include $(topdir)/make/global.mk
 
 all: drivers libs bins
 
-install: install-all
 
 CFLAGS += -Wall -Wextra -fPIC
 CFLAGS += -Wno-unused-parameter
@@ -36,8 +35,8 @@ CFLAGS += -ggdb
 
 LFLAGS += -lc
 
-include $(topdir)/var/make/build.mk
-include $(topdir)/var/make/drivers.mk
+include $(topdir)/make/build.mk
+include $(topdir)/make/drivers.mk
 
 DRV = vfat ext2 isofs
 
@@ -46,8 +45,8 @@ include $(foreach dir,$(DRV),$(topdir)/$(dir)/Makefile)
 drivers: $(DRVS)
 libs: $(LIBS)
 bins: $(BINS)
-install-all: $(patsubst %,install-%,$(DRVS) $(LIBS) $(BINS))
 
+install: $(INSTALL_DRVS) $(INSTALL_BINS)
 
 ifeq ($(NODEPS),)
 -include $(call fn_deps,SRCS)
