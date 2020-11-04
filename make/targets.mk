@@ -1,4 +1,4 @@
-#
+#      This file is part of the KoraOS project.
 #  Copyright (C) 2018  <Fabien Bavent>
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -14,42 +14,29 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-#  This makefile is more or less generic.
-#  The configuration is on `sources.mk`.
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-topdir ?= $(shell readlink -f $(dir $(word 1,$(MAKEFILE_LIST))))
-gendir ?= $(shell pwd)
+#  This makefile is generic.
 
-include $(topdir)/make/global.mk
+deliveries: $(BINS) $(LIBS)
 
-all: drivers libs bins
+install: install-utilities install-shared install-headers install-pkgconfig
 
+install-utilities: $(call fn_inst, $(BINS))
 
-CFLAGS += -Wall -Wextra -fPIC
-CFLAGS += -Wno-unused-parameter
-ifeq ($(target_os),kora)
-CFLAGS += -Dmain=_main
+install-shared: $(call fn_inst, $(LIBS))
+
+ifeq (,$(wildcard $(topdir)/$(PACKAGE).pc.in))
+install-pkgconfig:
+else
+install-pkgconfig: $(gendir)/$(PACKAGE).pc
+	$(S) mkdir -p $(prefix)/lib/pkgconfig
+	$(S) cp -RpP -f $< $(prefix)/lib/pkgconfig/
+
+$(gendir)/$(PACKAGE).pc: $(topdir)/$(PACKAGE).pc.in
+	$(S) echo "prefix=${prefix}" > $@
+	$(S) echo "version=${VERSION}" >> $@
+	$(S) cat $< >> $@
 endif
 
-CFLAGS += -ggdb
 
-LFLAGS += -lc
-
-include $(topdir)/make/build.mk
-include $(topdir)/make/drivers.mk
-
-# DRV = vfat ext2 isofs
-DRV = vfat isofs ext2
-
-include $(foreach dir,$(DRV),$(topdir)/$(dir)/Makefile)
-
-drivers: $(DRVS)
-libs: $(LIBS)
-bins: $(BINS)
-
-install: $(INSTALL_DRVS) $(INSTALL_BINS)
-
-ifeq ($(NODEPS),)
--include $(call fn_deps,SRCS)
-endif
+.PHONY: all install install-utilities install-shared install-headers install-pkgconfig
 
